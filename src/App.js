@@ -1,21 +1,64 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
-class App extends Component {
-  render() {
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect
+} from 'react-router-dom';
+
+class Home extends React.Component {
+  state = {
+    gotoAbout: false,
+    list: null
+  };
+  aboutClick = (e) => {
+    this.setState( { gotoAbout: true, list: { created: new Date(), selectedFoods: []}})
+  };
+  render = () => {
+    if( this.state.gotoAbout){
+      return (
+        <Redirect to={{
+          pathname:"/about",
+          state: { list: this.state.list}
+        }} />
+      );
+    }
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <h2>Home</h2>
+        <button type="button" onClick={this.aboutClick} >Test</button>
       </div>
     );
-  }
+  };
 }
+
+class About extends React.Component{
+  render = () => {
+    console.log( this.props.location.state);
+    return (
+      <div>
+        <h2>About</h2>
+      </div>
+    );
+  };
+}
+
+const App = () => (
+  <Router>
+    <div>
+      <ul>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/about">About</Link></li>
+      </ul>
+
+      <hr/>
+
+      <Route exact path="/" component={Home}/>
+      <Route path="/about" component={About}/>
+    </div>
+  </Router>
+);
 
 export default App;
